@@ -123,7 +123,8 @@ class I18n {
    *                        This _quantity map_ should be defined in the `qtyMap` parameter of the constructor
    * @param {Object} params Params as { key: value } to replace, if needed.
    *                        `n` will always be added as a parameter, but it can be overwritten if specified.
-   *
+   * @returns {String}      Translated text or `id` if not found
+
    * @example
    * const definitions = {
    *   en: {
