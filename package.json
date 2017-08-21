@@ -10,6 +10,7 @@
     "name": "danikaze",
     "email": "danikaze@gmail.com"
   },
+  "license": "ISC",
   "devDependencies": {
     "chai": "^4.1.1",
     "eslint": "^3.13.0",

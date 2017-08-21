@@ -2,24 +2,30 @@ class I18n {
   /**
    * Creates an instance of I18n.
    *
-   * @param {String} lang          Active language at the beginning
-   * @param {Object} [definitions] If specified, `addDefinitions` will be called when constructing the object
+   * @param {String} [lang]        Active language at the beginning.
+   *                               If not specified, `setLanguage` will need to be called before translating anything.
+   * @param {Object} [definitions] If specified, `addDefinitions` will be called when constructing the object.
+   * @param {Object} [qtyMap]      Quantity map used to resolve the translation to use when using `translateN`.
+   *                               Object as `{ id: { qty: id } }`
    */
-  constructor(lang, definitions) {
+  constructor(lang, definitions, qtyMap) {
     this.texts = {};
+    this.qtyMap = {};
 
     if (definitions) {
-      this.addDefinitions(definitions);
+      this.addDefinitions(definitions, qtyMap);
     }
 
-    this.setLanguage(lang);
+    if (lang) {
+      this.setLanguage(lang);
+    }
   }
 
   /**
    * @returns {String[]} list of the available languages
    */
   getAvailableLanguages() {
-    return Object.keys(this.texts);
+    return Object.keys(this.texts).filter((lang) => lang !== 'nMap');
   }
 
   /**
@@ -50,18 +56,27 @@ class I18n {
    * @param {Object} definitions Map of texts as `{ languageCode: translations }`, being `translations` as
    *                             `{ id: text }` or `{ id: function(params) => text }`
    *                             Both `languageCode` and `id` are case insensitive
+   * @param {Object} [qtyMap]    Quantity map used to resolve the translation to use when using `translateN`.
+   *                             Object as `{ id: { qty: id } }`
    */
-  addDefinitions(definitions) {
+  addDefinitions(definitions, qtyMap) {
     Object.keys(definitions).forEach((lang) => {
       lang = lang.toLowerCase();
       const rawTranslations = definitions[lang];
       const translations = this.texts[lang] || {};
-      Object.keys(translations).forEach((key) => {
+      Object.keys(rawTranslations).forEach((key) => {
         translations[key.toLowerCase()] = rawTranslations[key];
       });
       this.texts[lang] = translations;
     });
-    this.availableLanguages.sort();
+
+    if (!qtyMap) {
+      return;
+    }
+
+    Object.keys(qtyMap).forEach((id) => {
+      this.qtyMap[id.toLowerCase()] = qtyMap[id];
+    });
   }
 
   /**
@@ -98,6 +113,44 @@ class I18n {
     }
 
     return text;
+  }
+
+  /**
+   * Get the translation of a text in the active language, depending on a quantity.
+   *
+   * @param {Number} n      Quantity used to decide the translation via `map`
+   * @param {String} map    ID of the _quantity map_ which will be used to get the definitions from `nMap`
+   *                        This _quantity map_ should be defined in the `qtyMap` parameter of the constructor
+   * @param {Object} params Params as { key: value } to replace, if needed.
+   *                        `n` will always be added as a parameter, but it can be overwritten if specified.
+   *
+   * @example
+   * const definitions = {
+   *   en: {
+   *     none: 'No items.',
+   *     one: (p) => `1 item (${p.foobar}).`,
+   *     lots: (p) => `${p.n} items (${p.foobar})`,
+   *   },
+   * };
+   * const qtyMap = {
+   *   items: {
+   *     0: 'none',
+   *     1: 'one',
+   *     _: 'lots',
+   *   },
+   * }
+   * const i18n = new I18n('en', definitions, qtyMap);
+   *
+   * i18n.translateN(0, 'items');      // 'No items.'
+   * i18n.translateN(1, 'items', '^'); // '1 item (^).'
+   * i18n.translateN(5, 'items', '*'); // '5 items (*).'
+   */
+  translateN(n, id, params) {
+    id = this.qtyMap[id.toLowerCase()];
+    id = id[n] || id._;
+    params = params ? Object.assign({ n }, params) : { n };
+
+    return this.translate(id, params);
   }
 }
 
