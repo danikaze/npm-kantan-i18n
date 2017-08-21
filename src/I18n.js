@@ -118,8 +118,8 @@ class I18n {
   /**
    * Get the translation of a text in the active language, depending on a quantity.
    *
-   * @param {Number} n      Quantity used to decide the translation via `map`
-   * @param {String} map    ID of the _quantity map_ which will be used to get the definitions from `nMap`
+   * @param {Number} n      Quantity used to decide the translation
+   * @param {String} id     ID of the _quantity map_ which will be used to get the definitions
    *                        This _quantity map_ should be defined in the `qtyMap` parameter of the constructor
    * @param {Object} params Params as { key: value } to replace, if needed.
    *                        `n` will always be added as a parameter, but it can be overwritten if specified.
