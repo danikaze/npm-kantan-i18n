@@ -2,6 +2,8 @@
 
 Really simple internationalization system.
 
+Check the [API documentation here](docs/README.md).
+
 ## Install
 
 ```
