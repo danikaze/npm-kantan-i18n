@@ -1,19 +1,28 @@
 {
   "name": "kantan-i18n",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Simple internationalization system",
-  "main": "src/I18n.js",
-  "scripts": {
-    "test": "nyc mocha test/*.spec.js",
-    "docs": "node scripts/generateDocs.js"
-  },
+  "main": "lib/I18n.js",
+  "types": "lib/I18n.d.ts",
   "author": {
     "name": "danikaze",
     "email": "danikaze@gmail.com"
   },
   "license": "ISC",
+  "scripts": {
+    "test": "nyc mocha test/*.spec.js",
+    "test:brk": "nyc mocha --inspect-brk test/*.spec.js",
+    "build": "yarn build:package && yarn build:docs",
+    "build:docs": "node scripts/generateDocs.js",
+    "build:babel": "cross-env NODE_ENV=release babel ./src --out-dir ./lib --ignore spec.js --ignore dev.* --copy-files",
+    "build:package": "yarn build:package-clean && yarn run build:babel",
+    "build:package-clean": "rimraf lib"
+  },
   "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.6.0",
     "chai": "^4.1.1",
+    "cross-env": "^5.0.5",
     "eslint": "^3.13.0",
     "eslint-config-airbnb": "^14.0.0",
     "eslint-loader": "1.5.0",
@@ -31,5 +40,7 @@
     "nyc": "^11.1.0",
     "rimraf": "^2.6.1"
   },
-  "dependencies": {}
+  "dependencies": {
+    "babel-plugin-transform-object-assign": "^6.22.0"
+  }
 }

@@ -42,6 +42,6 @@ describe('I18n.singleton', () => {
 
   it('should accept aliases t and n', () => {
     expect(i18n.t('foobar')).to.equal(i18n.translate('foobar'));
-    expect(i18n.n(0, 'items')).to.equal(i18n.n(0, 'items'));
+    expect(i18n.n(0, 'items')).to.equal(i18n.translateN(0, 'items'));
   });
 });

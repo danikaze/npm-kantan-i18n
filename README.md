@@ -91,3 +91,15 @@ i18n.setLanguage('en');
 _('simple');                          // This is a simple text
 _n(0, 'items', { foobar: '*#^#*' });  // No items.
 ```
+
+# Change log
+
+## 1.0.1
+
+Added *.d.ts* declaration files for TypeScript
+Added library building to *lib/* with babel
+
+## 1.0.0
+
+First release
+

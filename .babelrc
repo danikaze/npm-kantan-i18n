@@ -1,0 +1,18 @@
+{
+  "presets": [
+    ["env", {
+      "targets": {
+        "browsers": [
+          "last 2 versions",
+          "iOS >= 8",
+          "Android >= 4"
+        ]
+      },
+      "loose": true,
+      "modules": false
+    }]
+  ],
+  "plugins": [
+    "transform-object-assign"
+  ]
+}

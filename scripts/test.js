@@ -34,17 +34,18 @@ function getTestCommand() {
   };
   const istanbul = path.normalize(`${root}/node_modules/istanbul/lib/cli.js`);
   const karma = path.normalize(`${root}/node_modules/.bin/karma`);
-  const mocha = path.normalize(`${root}/node_modules/mocha/bin/mocha`);
+  const nyc = path.normalize(`${root}/node_modules/nyc/bin/nyc.js`);
+  const mocha = 'mocha';
   const coverageDir = path.normalize(`${root}/coverage`);
   const testDir = path.normalize(`${root}/test/*.spec.js`);
-
 
   if (paramKarma) {
     command = karma;
     args = ['start', `--singleRun=${!paramWatch}`];
   } else {
     args = [];
-    command = mocha;
+    command = nyc;
+    args.push(mocha);
     if (paramNodeDebug) {
       args.push('--inspect-brk');
     } else {
